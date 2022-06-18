@@ -9,6 +9,7 @@ import SwiftUI
 import CoreData
 
 struct ContentView: View {
+    // MARK: - PROPERTY
     @Environment(\.managedObjectContext) private var viewContext
 
     @FetchRequest(
@@ -16,7 +17,27 @@ struct ContentView: View {
         animation: .default)
     private var items: FetchedResults<Item>
 
+    @State private var showingAddTodoView = false
+
+    // MARK: - BODY
     var body: some View {
+        NavigationView {
+            List(0..<5) { item in
+                Text("Hello \(item)")
+            }
+            .navigationBarTitle("Todo", displayMode: .inline)
+            .navigationBarItems(trailing:
+                Button(action: {
+                    self.showingAddTodoView.toggle()
+                }) {
+                    Image(systemName: "plus")
+                }
+            )
+            .sheet(isPresented: $showingAddTodoView) {
+                AddTodoView()
+            }
+        }
+        /*
         NavigationView {
             List {
                 ForEach(items) { item in
@@ -40,6 +61,7 @@ struct ContentView: View {
             }
             Text("Select an item")
         }
+         */
     }
 
     private func addItem() {
@@ -81,6 +103,8 @@ private let itemFormatter: DateFormatter = {
     return formatter
 }()
 
+
+// MARK: - PREVIEW
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
