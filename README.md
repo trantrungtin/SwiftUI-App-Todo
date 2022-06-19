@@ -4,7 +4,7 @@
 [![Platform](https://img.shields.io/badge/platform-ios-brightgreen)]()
 
 
-# SwiftUI 2 - Devote
+# SwiftUI 2 - Todo
 <br />
 <p align="center">
   <a href="https://github.com/trantrungtin/SwiftUI-App-Todo">
