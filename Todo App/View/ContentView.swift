@@ -13,6 +13,7 @@ struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @FetchRequest(entity: Todo.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \Todo.name, ascending: true)]) var todos: FetchedResults<Todo>
 
+    @State private var showingSettingsView = false
     @State private var showingAddTodoView = false
     @State private var animatingButton = false
     
@@ -42,12 +43,13 @@ struct ContentView: View {
                     leading: EditButton(),
                     trailing:
                     Button(action: {
-                        self.showingAddTodoView.toggle()
+                        self.showingSettingsView.toggle()
                     }) {
-                        Image(systemName: "plus")
+                        Image(systemName: "paintbrush")
+                            .imageScale(.large)
                     }
-                    .sheet(isPresented: $showingAddTodoView) {
-                        AddTodoView().environment(\.managedObjectContext, viewContext)
+                    .sheet(isPresented: $showingSettingsView) {
+                        SettingsView()
                     }
                 )
                 
