@@ -15,11 +15,12 @@ struct PersistenceController {
     static var preview: PersistenceController = {
         let result = PersistenceController(inMemory: true)
         let viewContext = result.container.viewContext
+        let priorities: [Priority] = [.High, .Normal, .Low]
         for i in 0..<10 {
             let newItem = Todo(context: viewContext)
             newItem.id = UUID()
             newItem.name = "Sample Task\(i)"
-            newItem.priority = Priority.Normal.rawValue
+            newItem.priority = priorities.randomElement() ?? .Normal
         }
         do {
             try viewContext.save()

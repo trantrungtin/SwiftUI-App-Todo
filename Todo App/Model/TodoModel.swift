@@ -9,10 +9,25 @@ import Foundation
 import CoreData
 import SwiftUI
 
+extension Todo {
+    var priority: Priority {
+        get {
+            if let priorityValue = self.priorityValue {
+                return Priority(rawValue: priorityValue) ?? .Normal
+            }
+            return .Normal
+        }
+        
+        set {
+            self.priorityValue = newValue.rawValue
+        }
+    }
+}
+
 func saveTodo(context: NSManagedObjectContext, name: String, priority: Priority) {
     let todo = Todo(context: context)
     todo.name = name
-    todo.priority = priority.rawValue
+    todo.priority = priority
     do {
         try context.save()
     } catch {
