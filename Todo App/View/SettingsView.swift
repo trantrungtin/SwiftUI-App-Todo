@@ -12,6 +12,9 @@ struct SettingsView: View {
     @Environment(\.presentationMode) var presentationMode
     @EnvironmentObject var iconSettings: IconNames
     
+    let themes: [Theme] = themeData
+    @ObservedObject var theme = ThemeSettings()
+    
     // MARK: - FUNCTIONS
     private func onIconChange(_ value: Int) {
         let index = self.iconSettings.iconNames.firstIndex(of: UIApplication.shared.alternateIconName) ?? 0
@@ -23,6 +26,10 @@ struct SettingsView: View {
                 }
             }
         }
+    }
+    
+    private var themeColor : Color {
+        themes[theme.themeSetttings].themeColor
     }
     
     // MARK: - BODY
@@ -72,6 +79,32 @@ struct SettingsView: View {
                     }
                     .padding(.vertical, 3)
                     
+                    Section(header: (
+                        HStack {
+                            Text("Choose the app theme")
+                            Image(systemName: "circle.fill")
+                                .resizable()
+                                .frame(width: 10, height: 10)
+                                .foregroundColor(themeColor)
+                        }
+                    )) {
+                        List {
+                            ForEach(themes, id: \.id) {item in
+                                Button(action: {
+                                    self.theme.themeSetttings = item.id
+                                    UserDefaults.standard.set(self.theme.themeSetttings, forKey: keyTheme)
+                                }) {
+                                    HStack {
+                                        Image(systemName: "circle.fill")
+                                            .foregroundColor(item.themeColor)
+                                        Text(item.themeName)
+                                    }
+                                }
+                                .accentColor(.primary)
+                            }
+                        }
+                    }
+                    
                     Section(header: Text("Follow us on social media")) {
                         FormRowLinkView(icon: "globe", color: .pink, text: "Website", link: "https://autograde.app")
                         FormRowLinkView(icon: "link", color: .blue, text: "Github", link: "https://github.com/trantrungtin")
@@ -110,7 +143,7 @@ struct SettingsView: View {
             .navigationBarTitle("Settings", displayMode: .inline)
             .background(colorBackground.edgesIgnoringSafeArea(.all))
         } //: NAVIGATION
-        
+        .accentColor(themeColor)
     }
 }
 

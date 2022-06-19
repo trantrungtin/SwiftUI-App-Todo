@@ -13,11 +13,16 @@ struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @FetchRequest(entity: Todo.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \Todo.name, ascending: true)]) var todos: FetchedResults<Todo>
     @EnvironmentObject var iconSettings: IconNames
-    
+    @ObservedObject var theme = ThemeSettings()
+    var themes: [Theme] = themeData
 
     @State private var showingSettingsView = false
     @State private var showingAddTodoView = false
     @State private var animatingButton = false
+    
+    private var themeColor : Color {
+        themes[theme.themeSetttings].themeColor
+    }
     
     // MARK: - FUNCTIONS
     private func delete(offsets: IndexSet) {
@@ -42,7 +47,7 @@ struct ContentView: View {
                 }
                 .navigationBarTitle("Todo", displayMode: .inline)
                 .navigationBarItems(
-                    leading: EditButton(),
+                    leading: EditButton().accentColor(themeColor),
                     trailing:
                     Button(action: {
                         self.showingSettingsView.toggle()
@@ -50,6 +55,7 @@ struct ContentView: View {
                         Image(systemName: "paintbrush")
                             .imageScale(.large)
                     }
+                    .accentColor(themeColor)
                     .sheet(isPresented: $showingSettingsView) {
                         SettingsView()
                             .environmentObject(self.iconSettings)
@@ -66,13 +72,13 @@ struct ContentView: View {
             .overlay(
                 ZStack {
                     Circle()
-                        .fill(.blue)
+                        .fill(themeColor)
                         .opacity(self.animatingButton ? 0.2 : 0)
                         .scaleEffect(self.animatingButton ? 1 : 0)
                         .frame(width: 68, height: 68, alignment: .center)
                     
                     Circle()
-                        .fill(.blue)
+                        .fill(themeColor)
                         .opacity(self.animatingButton ? 0.15 : 0)
                         .scaleEffect(self.animatingButton ? 1 : 0)
                         .frame(width: 88, height: 88, alignment: .center)
@@ -88,6 +94,7 @@ struct ContentView: View {
                     } //: BUTTON
                     
                 }
+                .accentColor(themeColor)
                 .onAppear {
                     withAnimation(.easeOut(duration: 2).repeatForever(autoreverses: true)) {
                         self.animatingButton.toggle()

@@ -8,6 +8,8 @@
 import Foundation
 import SwiftUI
 
+let keyTheme = "Theme"
+
 enum Priority: String, CaseIterable {
     case High
     case Normal

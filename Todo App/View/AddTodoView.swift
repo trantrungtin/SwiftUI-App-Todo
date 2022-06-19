@@ -11,6 +11,12 @@ struct AddTodoView: View {
     // MARK: - PROPERTY
     @Environment(\.managedObjectContext) var viewContext
     @Environment(\.presentationMode) var presentationMode
+    @ObservedObject var theme = ThemeSettings()
+    var themes: [Theme] = themeData
+    
+    private var themeColor : Color {
+        themes[theme.themeSetttings].themeColor
+    }
     
     @State private var name: String = ""
     @State private var priority: Priority = .Normal
@@ -57,7 +63,7 @@ struct AddTodoView: View {
                             .font(.system(size: 24, weight: .bold, design: .default))
                             .padding()
                             .frame(minWidth: 0, maxWidth: .infinity)
-                            .background(.blue)
+                            .background(themeColor)
                             .cornerRadius(9)
                             .foregroundColor(.white)
                     }
@@ -79,6 +85,7 @@ struct AddTodoView: View {
                 Alert(title: Text(errorTitle), message: Text(errorMessage), dismissButton: .default(Text("OK")))
             }
         } //: NAVIGATION
+        .accentColor(themeColor)
     }
 }
 
