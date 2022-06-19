@@ -36,8 +36,12 @@ struct AddTodoView: View {
     var body: some View {
         NavigationView {
             VStack {
-                Form {
+                VStack(alignment: .leading, spacing: 20) {
                     TextField("Todo", text: $name)
+                        .padding()
+                        .background(Color(UIColor.tertiarySystemFill))
+                        .cornerRadius(9)
+                        .font(.system(size: 24, weight: .bold, design: .default))
                     
                     Picker("Priority", selection: $priority) {
                         ForEach(Priority.allCases, id: \.self) {
@@ -50,8 +54,16 @@ struct AddTodoView: View {
                         self.save();
                     }) {
                         Text("Save")
+                            .font(.system(size: 24, weight: .bold, design: .default))
+                            .padding()
+                            .frame(minWidth: 0, maxWidth: .infinity)
+                            .background(.blue)
+                            .cornerRadius(9)
+                            .foregroundColor(.white)
                     }
-                }
+                } //: VSTACK
+                .padding(.horizontal)
+                .padding(.vertical, 30)
                 
                 Spacer()
             } //: VSTACK
