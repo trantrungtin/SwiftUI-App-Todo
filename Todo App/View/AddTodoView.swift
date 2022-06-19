@@ -11,6 +11,7 @@ struct AddTodoView: View {
     // MARK: - PROPERTY
     @Environment(\.managedObjectContext) var viewContext
     @Environment(\.presentationMode) var presentationMode
+    
     @State private var name: String = ""
     @State private var priority: Priority = .Normal
     

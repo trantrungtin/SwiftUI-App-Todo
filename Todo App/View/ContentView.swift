@@ -11,22 +11,34 @@ import CoreData
 struct ContentView: View {
     // MARK: - PROPERTY
     @Environment(\.managedObjectContext) private var viewContext
-//
-//    @FetchRequest(
-//        sortDescriptors: [NSSortDescriptor(keyPath: \Item.timestamp, ascending: true)],
-//        animation: .default)
-//    private var items: FetchedResults<Item>
+    @FetchRequest(entity: Todo.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \Todo.name, ascending: true)]) var todos: FetchedResults<Todo>
 
     @State private var showingAddTodoView = false
+    
+    // MARK: - FUNCTIONS
+    private func delete(offsets: IndexSet) {
+        withAnimation {
+            deleteTodos(context: viewContext, todos: offsets.map{ todos[$0] })
+        }
+    }
 
     // MARK: - BODY
     var body: some View {
         NavigationView {
-            List(0..<5) { item in
-                Text("Hello \(item)")
+            List {
+                ForEach(self.todos, id: \.self) { todo in
+                    HStack {
+                        Text(todo.name ?? "")
+                        Spacer()
+                        Text(todo.priority ?? "")
+                    }
+                }
+                .onDelete(perform: delete)
             }
             .navigationBarTitle("Todo", displayMode: .inline)
-            .navigationBarItems(trailing:
+            .navigationBarItems(
+                leading: EditButton(),
+                trailing:
                 Button(action: {
                     self.showingAddTodoView.toggle()
                 }) {
@@ -37,62 +49,6 @@ struct ContentView: View {
                 AddTodoView().environment(\.managedObjectContext, viewContext)
             }
         }
-        /*
-        NavigationView {
-            List {
-                ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.timestamp!, formatter: itemFormatter)")
-                    } label: {
-                        Text(item.timestamp!, formatter: itemFormatter)
-                    }
-                }
-                .onDelete(perform: deleteItems)
-            }
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    EditButton()
-                }
-                ToolbarItem {
-                    Button(action: addItem) {
-                        Label("Add Item", systemImage: "plus")
-                    }
-                }
-            }
-            Text("Select an item")
-        }
-         */
-    }
-
-    private func addItem() {
-        withAnimation {
-            let newItem = Todo(context: viewContext)
-//            newItem.timestamp = Date()
-
-            do {
-                try viewContext.save()
-            } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-            }
-        }
-    }
-
-    private func deleteItems(offsets: IndexSet) {
-//        withAnimation {
-//            offsets.map { items[$0] }.forEach(viewContext.delete)
-//
-//            do {
-//                try viewContext.save()
-//            } catch {
-//                // Replace this implementation with code to handle the error appropriately.
-//                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-//                let nsError = error as NSError
-//                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-//            }
-//        }
     }
 }
 
