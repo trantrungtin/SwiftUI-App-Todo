@@ -13,7 +13,7 @@ struct SettingsView: View {
     @EnvironmentObject var iconSettings: IconNames
     
     let themes: [Theme] = themeData
-    @ObservedObject var theme = ThemeSettings()
+    @ObservedObject var theme = ThemeSettings.shared
     
     // MARK: - FUNCTIONS
     private func onIconChange(_ value: Int) {

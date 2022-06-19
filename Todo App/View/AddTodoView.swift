@@ -11,7 +11,7 @@ struct AddTodoView: View {
     // MARK: - PROPERTY
     @Environment(\.managedObjectContext) var viewContext
     @Environment(\.presentationMode) var presentationMode
-    @ObservedObject var theme = ThemeSettings()
+    @ObservedObject var theme = ThemeSettings.shared
     var themes: [Theme] = themeData
     
     private var themeColor : Color {
