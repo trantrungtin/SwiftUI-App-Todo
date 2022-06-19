@@ -10,6 +10,10 @@ import SwiftUI
 struct EmptyListView: View {
     // MARK: - PROPERTY
     @State private var isAnimated: Bool = false
+    @ObservedObject var theme = ThemeSettings.shared
+    var themes: [Theme] = themeData
+
+    
     let images: [String] = [
         "illustration-no1",
         "illustration-no2",
@@ -26,18 +30,26 @@ struct EmptyListView: View {
         "Each night schedule for tomorrow."
     ]
     
+    private var themeColor : Color {
+        themes[theme.themeSetttings].themeColor
+    }
+    
     // MARK: - BODY
     var body: some View {
         ZStack {
             VStack(alignment: .center, spacing: 20) {
                 Image(images.randomElement() ?? images[0])
+                    .renderingMode(.template)
                     .resizable()
                     .scaledToFit()
                     .frame(minWidth: 256, idealWidth: 280, maxWidth: 360, minHeight: 256, idealHeight: 280, maxHeight: 360, alignment: .center)
                     .layoutPriority(1)
+                    .foregroundColor(themeColor)
+                
                 Text(tips.randomElement() ?? tips[0])
                     .layoutPriority(0.5)
                     .font(.system(.headline, design: .rounded))
+                    .foregroundColor(themeColor)
             }
             .padding(.horizontal)
             .opacity(isAnimated ? 1 : 0)

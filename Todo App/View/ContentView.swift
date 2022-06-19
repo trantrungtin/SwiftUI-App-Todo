@@ -30,6 +30,17 @@ struct ContentView: View {
             deleteTodos(context: viewContext, todos: offsets.map{ todos[$0] })
         }
     }
+    
+    private func colorize(priority: Priority) -> Color {
+        switch priority {
+        case .High:
+            return .pink
+        case .Normal:
+            return .green
+        case .Low:
+            return .blue
+        }
+    }
 
     // MARK: - BODY
     var body: some View {
@@ -38,10 +49,25 @@ struct ContentView: View {
                 List {
                     ForEach(self.todos, id: \.self) { todo in
                         HStack {
+                            Circle()
+                                .frame(width: 12, height: 12, alignment: .center)
+                                .foregroundColor(self.colorize(priority: todo.priority))
+                            
                             Text(todo.name ?? "")
+                                .fontWeight(.semibold)
+                            
                             Spacer()
-                            Text(todo.priority ?? "")
-                        }
+                            Text(todo.priorityValue ?? "")
+                                .font(.footnote)
+                                .foregroundColor(colorSystemGray2)
+                                .padding(3)
+                                .frame(minWidth: 62)
+                                .overlay(
+                                    Capsule()
+                                        .stroke(colorSystemGray2, lineWidth: 0.75)
+                                )
+                        } //: HSTACK
+                        .padding(.vertical, 10)
                     }
                     .onDelete(perform: delete)
                 }

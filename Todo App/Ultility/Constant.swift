@@ -19,3 +19,4 @@ enum Priority: String, CaseIterable {
 // MARK: - COLORS
 let colorBase = Color("ColorBase")
 let colorBackground = Color("ColorBackground")
+let colorSystemGray2 = Color(UIColor.systemGray2)
