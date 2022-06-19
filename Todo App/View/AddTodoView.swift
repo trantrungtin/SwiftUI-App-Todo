@@ -9,9 +9,27 @@ import SwiftUI
 
 struct AddTodoView: View {
     // MARK: - PROPERTY
+    @Environment(\.managedObjectContext) var viewContext
     @Environment(\.presentationMode) var presentationMode
     @State private var name: String = ""
     @State private var priority: Priority = .Normal
+    
+    @State private var errorShowing: Bool = false
+    @State private var errorTitle: String = ""
+    @State private var errorMessage: String = ""
+    
+    private func save() {
+        if self.name != "" {
+            saveTodo(context: self.viewContext, name: self.name, priority: self.priority)
+            self.name = ""
+        } else {
+            self.errorShowing = true
+            self.errorTitle = "Invalid name"
+            self.errorMessage = "Make sure to enter something for\nthe new todo item."
+            return
+        }
+        self.presentationMode.wrappedValue.dismiss()
+    }
     
     // MARK: - BODY
     var body: some View {
@@ -28,7 +46,7 @@ struct AddTodoView: View {
                     .pickerStyle(SegmentedPickerStyle())
                     
                     Button(action: {
-                        
+                        self.save();
                     }) {
                         Text("Save")
                     }
@@ -44,6 +62,9 @@ struct AddTodoView: View {
                     Image(systemName: "xmark")
                 }
             )
+            .alert(isPresented: $errorShowing) {
+                Alert(title: Text(errorTitle), message: Text(errorMessage), dismissButton: .default(Text("OK")))
+            }
         } //: NAVIGATION
     }
 }
