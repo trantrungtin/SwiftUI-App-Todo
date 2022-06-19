@@ -12,6 +12,8 @@ struct ContentView: View {
     // MARK: - PROPERTY
     @Environment(\.managedObjectContext) private var viewContext
     @FetchRequest(entity: Todo.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \Todo.name, ascending: true)]) var todos: FetchedResults<Todo>
+    @EnvironmentObject var iconSettings: IconNames
+    
 
     @State private var showingSettingsView = false
     @State private var showingAddTodoView = false
@@ -50,6 +52,7 @@ struct ContentView: View {
                     }
                     .sheet(isPresented: $showingSettingsView) {
                         SettingsView()
+                            .environmentObject(self.iconSettings)
                     }
                 )
                 

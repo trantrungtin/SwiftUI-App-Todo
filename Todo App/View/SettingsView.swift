@@ -10,6 +10,20 @@ import SwiftUI
 struct SettingsView: View {
     // MARK: - PROPERTY
     @Environment(\.presentationMode) var presentationMode
+    @EnvironmentObject var iconSettings: IconNames
+    
+    // MARK: - FUNCTIONS
+    private func onIconChange(_ value: Int) {
+        let index = self.iconSettings.iconNames.firstIndex(of: UIApplication.shared.alternateIconName) ?? 0
+        if index != value {
+            UIApplication.shared.setAlternateIconName(self.iconSettings.iconNames[value]) { error in
+                if let error = error {
+                    let nsError = error as NSError
+                    fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+                }
+            }
+        }
+    }
     
     // MARK: - BODY
     var body: some View {
@@ -17,6 +31,31 @@ struct SettingsView: View {
             VStack(alignment: .center, spacing: 0) {
                 
                 Form {
+                    Section(header: Text("Choose the app icon")) {
+                        Picker(selection: $iconSettings.currentIndex, label: Text("App Icons")) {
+                            ForEach(0..<iconSettings.iconNames.count) {idx in
+                                HStack {
+                                    Image(uiImage: UIImage(named: iconSettings.iconNames[idx] ?? "Blue") ?? UIImage())
+                                        .renderingMode(.original)
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 44, height: 44)
+                                        .cornerRadius(8)
+                                    
+                                    Spacer().frame(width: 8)
+                                    
+                                    Text(iconSettings.iconNames[idx] ?? "Blue")
+                                        .frame(alignment: .leading)
+                                }
+                                .padding(3)
+                            }
+                        }
+                        .onReceive([self.iconSettings.currentIndex].publisher.first()) { (value) in
+                            onIconChange(value)
+                        }
+                    }
+                    .padding(.vertical, 3)
+                    
                     Section(header: Text("Follow us on social media")) {
                         FormRowLinkView(icon: "globe", color: .pink, text: "Website", link: "https://autograde.app")
                         FormRowLinkView(icon: "link", color: .blue, text: "Github", link: "https://github.com/trantrungtin")
@@ -62,6 +101,6 @@ struct SettingsView: View {
 // MARK: - PREVIEW
 struct Settingsview_Previews: PreviewProvider {
     static var previews: some View {
-        SettingsView()
+        SettingsView().environmentObject(IconNames())
     }
 }
