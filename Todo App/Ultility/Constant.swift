@@ -6,9 +6,13 @@
 //
 
 import Foundation
+import SwiftUI
 
 enum Priority: String, CaseIterable {
     case High
     case Normal
     case Low
 }
+
+// MARK: - COLORS
+let colorBase = Color("ColorBase")

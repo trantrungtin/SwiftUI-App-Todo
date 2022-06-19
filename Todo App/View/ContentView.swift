@@ -25,29 +25,35 @@ struct ContentView: View {
     // MARK: - BODY
     var body: some View {
         NavigationView {
-            List {
-                ForEach(self.todos, id: \.self) { todo in
-                    HStack {
-                        Text(todo.name ?? "")
-                        Spacer()
-                        Text(todo.priority ?? "")
+            ZStack {
+                List {
+                    ForEach(self.todos, id: \.self) { todo in
+                        HStack {
+                            Text(todo.name ?? "")
+                            Spacer()
+                            Text(todo.priority ?? "")
+                        }
                     }
+                    .onDelete(perform: delete)
                 }
-                .onDelete(perform: delete)
-            }
-            .navigationBarTitle("Todo", displayMode: .inline)
-            .navigationBarItems(
-                leading: EditButton(),
-                trailing:
-                Button(action: {
-                    self.showingAddTodoView.toggle()
-                }) {
-                    Image(systemName: "plus")
+                .navigationBarTitle("Todo", displayMode: .inline)
+                .navigationBarItems(
+                    leading: EditButton(),
+                    trailing:
+                    Button(action: {
+                        self.showingAddTodoView.toggle()
+                    }) {
+                        Image(systemName: "plus")
+                    }
+                    .sheet(isPresented: $showingAddTodoView) {
+                        AddTodoView().environment(\.managedObjectContext, viewContext)
+                    }
+                )
+                
+                if todos.count == 0 {
+                    EmptyListView()
                 }
-            )
-            .sheet(isPresented: $showingAddTodoView) {
-                AddTodoView().environment(\.managedObjectContext, viewContext)
-            }
+            } //: ZSTACK
         }
     }
 }
